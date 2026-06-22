@@ -38,6 +38,7 @@ SRC_URI:append = " \
 	file://patches/0004-dts-allwinner-bananapi-m64-Consistent-nodes-for-mmc-devices.patch \
 	file://patches/0005-ARM-dts-sunxi-Add-MMC-alias-for-consistent-enumerati.patch \
 	file://patches/0006-dts-allwinner-orangepi-zero-mmc-aliases-for-consiste.patch \
+	file://patches/0007-conmakehash-strip-host-paths.patch \
 "
 
 SRC_URI:append:use-mailine-graphics = " file://drm.cfg"
@@ -46,6 +47,7 @@ SRC_URI:append:bananapi-m2-berry = " file://axp20x.cfg"
 SRC_URI:append:bananapi-m2-zero = " file://axp20x.cfg"
 SRC_URI:append:cubietruck = " file://axp20x.cfg"
 SRC_URI:append:nanopi-neo-air = " file://cam500b.cfg"
+SRC_URI:append:orange-pi-zero2w = " file://orange-pi-zero2w/sun50i-h618-orangepi-zero2w-expansion.dtso"
 SRC_URI:append:orange-pi-prime = " \
 	file://0001-dts-sun50i-h5-enable-power-button-for-orange-pi-prime.patch \
 	file://0002-dts-sun50i-h5-orange-pi-prime-add-regulator.patch \
@@ -53,3 +55,8 @@ SRC_URI:append:orange-pi-prime = " \
 "
 
 FILES_${KERNEL_PACKAGE_NAME}-base:append = " ${nonarch_base_libdir}/modules/${KERNEL_VERSION}/modules.builtin.modinfo"
+
+do_configure:prepend:orange-pi-zero2w() {
+    install -D -m 644 ${UNPACKDIR}/orange-pi-zero2w/sun50i-h618-orangepi-zero2w-expansion.dtso \
+        ${S}/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero2w-expansion.dtso
+}

@@ -11,3 +11,17 @@ SRC_URI[sha256sum] = "5ebaccf4ca3428cd26817bae62171f4efd270eed866a3e3d0a1d9e970b
 
 KERNEL_FEATURES:append:orange-pi-3lts = " bsp/orange-pi-3lts/orange-pi-3lts-6_5.scc bsp/uwe5622/uwe5622-6_6.scc bsp/orange-pi-3lts/fix-rtc.scc"
 KERNEL_FEATURES:append:orange-pi-zero2 = " bsp/h61x/orangepi-zero2-6_6.scc bsp/uwe5622/uwe5622-6_6.scc"
+
+SRC_URI:append:orange-pi-zero2w = " \
+    file://orange-pi-zero2w/patches/0001-add-orangepi-zero2w-dtb.patch \
+    file://orange-pi-zero2w/patches/0002-backport-sun50i-h616-include.patch \
+    file://orange-pi-zero2w/includes/sun50i-h616-cpu-opp.dtsi \
+    file://orange-pi-zero2w/sun50i-h618-orangepi-zero2w.dts \
+"
+
+do_configure:prepend:orange-pi-zero2w() {
+    install -D -m 644 ${UNPACKDIR}/orange-pi-zero2w/includes/sun50i-h616-cpu-opp.dtsi \
+        ${S}/arch/arm64/boot/dts/allwinner/sun50i-h616-cpu-opp.dtsi
+    install -D -m 644 ${UNPACKDIR}/orange-pi-zero2w/sun50i-h618-orangepi-zero2w.dts \
+        ${S}/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero2w.dts
+}

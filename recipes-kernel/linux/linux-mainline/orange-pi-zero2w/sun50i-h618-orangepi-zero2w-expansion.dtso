@@ -1,0 +1,71 @@
+/dts-v1/;
+/plugin/;
+
+#ifndef CLK_BUS_EPHY
+  #define CLK_BUS_EPHY 41
+#endif
+#ifndef RST_BUS_EPHY
+  #define RST_BUS_EPHY 22
+#endif
+
+&{/} {
+	compatible = "xunlong,orangepi-zero2w", "allwinner,sun50i-h618";
+
+	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "Expansion-Audio";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,cpu {
+			sound-dai = <&i2s1>;
+		};
+		simple-audio-card,codec {
+			sound-dai = <&codec>;
+		};
+	};
+};
+
+/* === Expansion board extras === */
+
+&ehci2 { status = "okay"; };
+&ohci2 { status = "okay"; };
+&ehci3 { status = "okay"; };
+&ohci3 { status = "okay"; };
+
+&i2s1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2s1_pins>;
+	status = "okay";
+};
+
+&codec {
+	allwinner,audio-routing = "Line Out", "LINEOUT";
+	status = "okay";
+};
+
+/* Internal 100M EPHY on expansion board */
+&mdio {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	int_mii_phy: ethernet-phy@0 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0>;   /* Try <1> or <16> if PHY not found */
+		clocks = <&ccu CLK_BUS_EPHY>;
+		resets = <&ccu RST_BUS_EPHY>;
+	};
+};
+
+&emac1 {
+	compatible = "allwinner,sun50i-h616-emac", "allwinner,sun50i-h6-emac";
+	pinctrl-names = "default";
+	pinctrl-0 = <&rmii_pins>;
+	phy-mode = "rmii";
+	phy-handle = <&int_mii_phy>;
+	status = "okay";
+};
+
+&usbphy {
+	usb2_vbus-supply = <&reg_vcc5v>;
+	usb3_vbus-supply = <&reg_vcc5v>;
+};

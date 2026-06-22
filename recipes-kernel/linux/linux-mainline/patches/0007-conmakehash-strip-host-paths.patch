@@ -1,0 +1,32 @@
+From: Dennis Fehr <dennis.fehr@impactsoft.ca>
+Date: Tue, 23 Jun 2026 11:26:37 -0500
+Subject: [PATCH] drivers/vt/conmakehash: Strip host paths from generated files
+
+Upstream-Status: Denied
+
+Signed-off-by: Dennis Fehr <dennis.fehr@impactsoft.ca>
+---
+ drivers/tty/vt/conmakehash.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/vt/conmakehash.c b/drivers/tty/vt/conmakehash.c
+index cddd789fe46e..bd995e174b84 100644
+--- a/drivers/tty/vt/conmakehash.c
++++ b/drivers/tty/vt/conmakehash.c
+@@ -16,6 +16,7 @@
+ #include <sysexits.h>
+ #include <string.h>
+ #include <ctype.h>
++#include <libgen.h>
+
+ #define MAX_FONTLEN 256
+
+@@ -253,7 +254,7 @@ int main(int argc, char *argv[])
+ #include <linux/types.h>\n\
+ \n\
+ u8 dfont_unicount[%d] = \n\
+-{\n\t", argv[1], fontlen);
++{\n\t", basename(argv[1]), fontlen);
+
+   for ( i = 0 ; i < fontlen ; i++ )
+     {
